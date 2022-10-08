@@ -10,6 +10,10 @@ model = pickle.load(open('model/model_rossmann.pkl', 'rb'))
 # Initialize API
 app = Flask(__name__)
 
+@app.route('/')
+def test_status():
+    return {'status': 'ok'}
+
 @app.route('/rossmann/predict', methods=['POST'])
 def rossmann_predict():
     test_json = request.get_json()
@@ -24,7 +28,7 @@ def rossmann_predict():
         pipeline = Rossmann()
 
         # Data Cleaning
-        df1 = pipeline.data_cleaning(test_raw)
+        df1 = pipeline.data_cleaning(test_raw.copy())
 
         # Feature Engineering
         df2 = pipeline.feature_engineering(df1)
@@ -42,4 +46,4 @@ def rossmann_predict():
 
 if __name__ == '__main__':
     port = os.environ.get('PORT', 5000)
-    app.run(host='10.0.0.102', port=port)
+    app.run(host='0.0.0.0', port=port)
